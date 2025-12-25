@@ -18,6 +18,14 @@ public class Customer {
         return id;
     }
 
+    public String GetUserName(){
+        return userName;
+    }
+
+    public String getPassword(){
+        return password;
+    }
+
     public Customer addNewCustomer(String userName, String password){
         return new Customer(userName,password);
     }
