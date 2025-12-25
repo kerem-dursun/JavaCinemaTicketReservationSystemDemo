@@ -16,6 +16,7 @@ public class UserInterface {
 
                 if (userChoise == 1) {
                     System.out.println("Kullanıcı giriş ekranına yönlendiriliyorsunuz...");
+                    UserInterface.userLoginPage();
                     break;
                 } else if (userChoise == 2) {
                     System.out.println("Kullanıcı kayıt ekranına yönlendiriliyorsunuz...");
@@ -31,7 +32,7 @@ public class UserInterface {
         }
     }
 
-    public static void userRegisterPage(){
+    public static void userRegisterPage() {
         String userName;
         String password;
 
@@ -45,8 +46,36 @@ public class UserInterface {
 
         Connection connection = DatabaseConnection.getConnection();
         CustomerDao customerDao = new CustomerDao(connection);
-        customerDao.insert(Customer.addNewCustomer(userName,password));
+        customerDao.Register(Customer.addNewCustomer(userName, password));
+    }
 
+    public static void userLoginPage() {
+        String userName;
+        String password;
 
+        Scanner input = new Scanner(System.in);
+
+        for (int i = 0; i <= 5; i++) {
+
+            System.out.println("Lütfen kullanıcı adınızı giriniz: ");
+            userName = input.nextLine();
+
+            System.out.println("Lütfen parolanızı giriniz: ");
+            password = input.nextLine();
+
+            Connection connection = DatabaseConnection.getConnection();
+            CustomerDao customerDao = new CustomerDao(connection);
+
+            if (customerDao.loginControl(userName, password) == true) {
+                System.out.println("Kullanıcı girişi başarılı ana sayfaya yönlendiriliyorsunuz...");
+
+                break;
+            }
+            if(i==4){
+                System.out.println("Çok sayıda başarısız giriş denemesinde bulundunuz daha sonra tekrar deneyiniz.");
+                System.exit(0);
+            }
+            System.out.println("Kullanıcı adınız veya şifreniz yanlış tekrar deneyiniz.");
+        }
     }
 }

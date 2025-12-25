@@ -10,7 +10,7 @@ public class CustomerDao {
         this.connection = connection;
     }
 
-    public void insert(Customer customer){
+    public void Register(Customer customer){
         String sqlcode = """ 
                 insert into Customer(username, password) 
                 values (?, ?) 
@@ -31,6 +31,26 @@ public class CustomerDao {
 
         } catch (SQLException e) {
             throw new RuntimeException("Müşteri eklenemedi",e);
+        }
+    }
+
+    public boolean loginControl(String username, String password){
+        String sqlcode = """
+                select 1
+                from Customer
+                where userName = ? and password = ?
+                """;
+
+        try(PreparedStatement preparedStatement = connection.prepareStatement(sqlcode)){
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, password);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            return resultSet.next();
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Kullanıcı bilgileri yanlış.",e);
         }
     }
 
