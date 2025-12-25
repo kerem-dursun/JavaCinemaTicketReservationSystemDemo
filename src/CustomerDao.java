@@ -18,7 +18,7 @@ public class CustomerDao {
 
         try(PreparedStatement preparedStatement = connection.prepareStatement(sqlcode, PreparedStatement.RETURN_GENERATED_KEYS)){
 
-            preparedStatement.setString(1,customer.GetUserName());
+            preparedStatement.setString(1,customer.getUserName());
             preparedStatement.setString(2,customer.getPassword());
             preparedStatement.executeUpdate();
 
@@ -26,6 +26,8 @@ public class CustomerDao {
             if(resultSet.next()) {
                 customer.setId(resultSet.getInt(1));
             }
+
+            System.out.println("Kayıt işlemi başarılı.");
 
         } catch (SQLException e) {
             throw new RuntimeException("Müşteri eklenemedi",e);

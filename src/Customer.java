@@ -22,7 +22,7 @@ public class Customer {
         return id;
     }
 
-    public String GetUserName(){
+    public String getUserName(){
         return userName;
     }
 
@@ -30,7 +30,7 @@ public class Customer {
         return password;
     }
 
-    public Customer addNewCustomer(String userName, String password){
+    public static Customer addNewCustomer(String userName, String password){
         return new Customer(userName,password);
     }
 }
