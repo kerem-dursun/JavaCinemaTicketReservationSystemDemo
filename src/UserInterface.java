@@ -32,23 +32,6 @@ public class UserInterface {
         }
     }
 
-    public static void userRegisterPage() {
-        String userName;
-        String password;
-
-        Scanner input = new Scanner(System.in);
-
-        System.out.println("Lütfen kullanıcı adınızı giriniz: ");
-        userName = input.nextLine();
-
-        System.out.println("Lütfen parolanızı giriniz: ");
-        password = input.nextLine();
-
-        Connection connection = DatabaseConnection.getConnection();
-        CustomerDao customerDao = new CustomerDao(connection);
-        customerDao.Register(Customer.addNewCustomer(userName, password));
-    }
-
     public static void userLoginPage() {
         String userName;
         String password;
@@ -66,16 +49,40 @@ public class UserInterface {
             Connection connection = DatabaseConnection.getConnection();
             CustomerDao customerDao = new CustomerDao(connection);
 
-            if (customerDao.loginControl(userName, password) == true) {
+            if (customerDao.loginControl(userName, password)) {
+                UserSession.login(Customer.addNewCustomer(userName, password));
+                System.out.println(UserSession.getLoggedCustomer().getUserName());
                 System.out.println("Kullanıcı girişi başarılı ana sayfaya yönlendiriliyorsunuz...");
 
                 break;
             }
-            if(i==4){
+            if (i == 4) {
                 System.out.println("Çok sayıda başarısız giriş denemesinde bulundunuz daha sonra tekrar deneyiniz.");
                 System.exit(0);
             }
             System.out.println("Kullanıcı adınız veya şifreniz yanlış tekrar deneyiniz.");
+        }
+    }
+
+    public static void userRegisterPage() {
+        String userName;
+        String password;
+        boolean registered = false;
+
+        Connection connection = DatabaseConnection.getConnection();
+
+        CustomerDao customerDao = new CustomerDao(connection);
+
+        Scanner input = new Scanner(System.in);
+
+        while (!registered) {
+            System.out.println("Lütfen kullanıcı adınızı giriniz: ");
+            userName = input.nextLine();
+
+            System.out.println("Lütfen parolanızı giriniz: ");
+            password = input.nextLine();
+
+            registered = customerDao.Register(Customer.addNewCustomer(userName, password));
         }
     }
 }

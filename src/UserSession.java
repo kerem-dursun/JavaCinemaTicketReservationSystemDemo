@@ -1,6 +1,8 @@
 public class UserSession {
     private static Customer loggedCustomer;
 
+    private UserSession(){}
+
     public static void login(Customer customer) {
         loggedCustomer = customer;
     }
