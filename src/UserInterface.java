@@ -77,7 +77,8 @@ public class UserInterface {
 
         while (!registered) {
             System.out.println("Lütfen kullanıcı adınızı giriniz: ");
-            userName = input.nextLine();
+            if(userName = input.nextLine())
+
 
             System.out.println("Lütfen parolanızı giriniz: ");
             password = input.nextLine();
