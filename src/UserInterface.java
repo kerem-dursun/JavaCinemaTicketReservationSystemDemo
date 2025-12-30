@@ -53,7 +53,7 @@ public class UserInterface {
                 UserSession.login(Customer.addNewCustomer(userName, password));
                 System.out.println(UserSession.getLoggedCustomer().getUserName());
                 System.out.println("Kullanıcı girişi başarılı ana sayfaya yönlendiriliyorsunuz...");
-
+                UserInterface.mainPage();
                 break;
             }
             if (i == 4) {
@@ -76,14 +76,69 @@ public class UserInterface {
         Scanner input = new Scanner(System.in);
 
         while (!registered) {
-            System.out.println("Lütfen kullanıcı adınızı giriniz: ");
-            if(userName = input.nextLine())
+            while (true) {
+                System.out.println("Lütfen kullanıcı adınızı giriniz (en az 8 karakter giriniz): ");
+                userName = input.nextLine().trim();
 
+                if (userName.isEmpty()) {
+                    System.out.println("Kullanıcı adı boş girilemez.");
+                } else if (userName.length() < 8) {
+                    System.out.println("Kullanıcı adı en az 8 karakterden oluşmalıdır.");
+                } else {
+                    break;
+                }
+            }
 
-            System.out.println("Lütfen parolanızı giriniz: ");
-            password = input.nextLine();
+            while (true) {
+                System.out.println("Lütfen parolanızı giriniz: ");
+                password = input.nextLine().trim();
 
+                if (password.isEmpty()) {
+                    System.out.println("Parola adı boş girilemez.");
+                } else if (password.length() < 5) {
+                    System.out.println("Parola en az 5 karakterden oluşmalıdır.");
+                } else {
+                    break;
+                }
+            }
             registered = customerDao.Register(Customer.addNewCustomer(userName, password));
         }
+        System.out.println("Lütfen kayıt bilgileriniz ile giriş yapınız.");
+        UserInterface.userLoginPage();
+    }
+
+    public static void mainPage() {
+        System.out.println("1.Vizyondaki filmler.");
+        System.out.println("2.Geçmiş.");
+
+        Scanner input = new Scanner(System.in);
+        while (true) {
+            if (input.hasNextInt()) {
+                int userChoise = input.nextInt();
+
+                if (userChoise == 1) {
+                    System.out.println("Vizyondaki filmlere yönlendiriliyorsunuz...");
+                    UserInterface.moviePage();
+                    break;
+                } else if (userChoise == 2) {
+                    System.out.println("Geçmiş rezervasyonlar ekranına yönlendiriliyorsunuz...");
+                    UserInterface.historyPage();
+                    break;
+                } else {
+                    System.out.println("Geçersiz bir yanıt girdiniz lütfen sadece ekranda yazan sayıları kullanın.");
+                }
+            } else {
+                System.out.println("Geçersiz bir yanıt girdiniz lütfen sadece ekranda yazan sayıları kullanın.");
+                input.next();
+            }
+        }
+    }
+
+    public static void moviePage() {
+        System.out.println("Vizyondaki filmler.");
+    }
+
+    public static void historyPage() {
+        System.out.println("Geçmiş rezervasyonlar.");
     }
 }
