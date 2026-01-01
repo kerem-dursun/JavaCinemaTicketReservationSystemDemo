@@ -8,6 +8,8 @@ public abstract class Movie {
         this.title = title;
         this.duration = duration;
     }
-
+    public int getId() {return id;}
+    public String getTitle() {return title;}
+    public float getDuration() {return duration;}
     public abstract float getPrice();
 }

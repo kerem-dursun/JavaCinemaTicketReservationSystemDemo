@@ -135,7 +135,20 @@ public class UserInterface {
     }
 
     public static void moviePage() {
-        System.out.println("Vizyondaki filmler.");
+        Connection connection = DatabaseConnection.getConnection();
+        MovieDao movieDao = new MovieDao(connection);
+        System.out.println("Vizyondaki filmler:");
+
+        for (Movie movie : movieDao.getAllMovies()) {
+            System.out.println(
+                    movie.getId() +
+                            " | " +
+                            movie.getTitle() +
+                            " | Süre: " + movie.getDuration() +
+                            " dk | Fiyat: " + movie.getPrice() + " TL"
+            );
+        }
+        System.out.println("Bilet almak istediğiniz filmi seçiniz: "); // moviedao.getallmoveis().get komutu ile film seçilebiliyor
     }
 
     public static void historyPage() {
