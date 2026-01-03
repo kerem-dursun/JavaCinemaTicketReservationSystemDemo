@@ -135,6 +135,8 @@ public class UserInterface {
     }
 
     public static void moviePage() {
+        Scanner input = new Scanner(System.in);
+
         Connection connection = DatabaseConnection.getConnection();
         MovieDao movieDao = new MovieDao(connection);
         System.out.println("Vizyondaki filmler:");
@@ -149,6 +151,23 @@ public class UserInterface {
             );
         }
         System.out.println("Bilet almak istediğiniz filmi seçiniz: "); // moviedao.getallmoveis().get komutu ile film seçilebiliyor
+        while(true){
+            if(input.hasNextInt()){
+                int userChoice = input.nextInt();
+
+                if(userChoice <= movieDao.getAllMovies().size() && userChoice > 0){
+                    System.out.println(movieDao.getAllMovies().get(userChoice-1).getTitle());
+                    break;
+                }
+                else{
+                    System.out.println("Lütfen sadece filmlerin yanındaki sayıları terminale yazın.");
+                }
+            }
+            else{
+                System.out.println("Lütfen sadece filmlerin yanındaki sayıları terminale yazın.");
+            }
+        }
+        System.out.println("Kaç kişilik rezervasyon yapmak istersiniz?");
     }
 
     public static void historyPage() {
