@@ -11,7 +11,11 @@ public class Seat {
         return isAvailable;
     }
 
-    public void setAvailable(boolean available) {
+    public void isReserved(boolean available) {
         isAvailable = available;
+    }
+
+    public int getSeatNo() {
+        return seatNo;
     }
 }

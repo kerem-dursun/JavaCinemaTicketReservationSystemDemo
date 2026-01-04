@@ -157,7 +157,9 @@ public class UserInterface {
 
                 if(userChoice <= movieDao.getAllMovies().size() && userChoice > 0){
                     System.out.println(movieDao.getAllMovies().get(userChoice-1).getTitle());
+                    System.out.println(movieDao.getAllMovies().get(userChoice-1).getPrice() + "TL");
                     break;
+
                 }
                 else{
                     System.out.println("Lütfen sadece filmlerin yanındaki sayıları terminale yazın.");
@@ -167,7 +169,6 @@ public class UserInterface {
                 System.out.println("Lütfen sadece filmlerin yanındaki sayıları terminale yazın.");
             }
         }
-        System.out.println("Kaç kişilik rezervasyon yapmak istersiniz?");
     }
 
     public static void historyPage() {
