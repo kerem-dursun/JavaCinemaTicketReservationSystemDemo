@@ -2,16 +2,16 @@ import java.time.LocalDateTime;
 
 public class ShowTime {
     private int showTimeId;
-    private Movie movie;
+    private int movieId;
     private LocalDateTime dateTime;
 
-    public ShowTime(int showTimeId,  Movie movie, LocalDateTime dateTime) {
+    public ShowTime(int showTimeId,  int movieId, LocalDateTime dateTime) {
         this.showTimeId = showTimeId;
-        this.movie = movie;
+        this.movieId = movieId;
         this.dateTime = dateTime;
     }
 
     public int getShowTimeId() {return showTimeId;}
-    public Movie getMovie() {return movie;}
+    public int getMovieId() {return movieId;}
     public LocalDateTime getDateTime() {return dateTime;}
 }
