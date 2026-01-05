@@ -1,4 +1,5 @@
 import java.sql.Connection;
+import java.util.List;
 import java.util.Scanner;
 
 public class UserInterface {
@@ -150,22 +151,36 @@ public class UserInterface {
                             " dk | Fiyat: " + movie.getPrice() + " TL"
             );
         }
-        System.out.println("Bilet almak istediğiniz filmi seçiniz: "); // moviedao.getallmoveis().get komutu ile film seçilebiliyor
-        while(true){
-            if(input.hasNextInt()){
+        System.out.println("Bilet almak istediğiniz filmi seçiniz: ");
+        while (true) {
+            if (input.hasNextInt()) {
                 int userChoice = input.nextInt();
 
-                if(userChoice <= movieDao.getAllMovies().size() && userChoice > 0){
-                    System.out.println(movieDao.getAllMovies().get(userChoice-1).getTitle());
-                    System.out.println(movieDao.getAllMovies().get(userChoice-1).getPrice() + "TL");
-                    break;
+                if (userChoice <= movieDao.getAllMovies().size() && userChoice > 0) {
+                    System.out.println(movieDao.getAllMovies().get(userChoice - 1).getTitle());
+                    System.out.println(movieDao.getAllMovies().get(userChoice - 1).getPrice() + "TL");
 
-                }
-                else{
+                    Movie selectedMovie = movieDao.getAllMovies().get(userChoice - 1);
+
+                    ShowTimeDao showTimeDao = new ShowTimeDao(connection);
+
+                    List<ShowTime> showTimes = showTimeDao.getShowTimeByMovieId(selectedMovie.getId());
+
+                    System.out.println("Seans seçiniz :");
+
+                    for (int i = 0; i < showTimes.size(); i++) {
+                        System.out.println((i + 1) + ") " + showTimes.get(i).getTime());
+                    }
+
+                    int showTimeChoice = input.nextInt();
+                    ShowTime selectedShowTime = showTimes.get(showTimeChoice - 1);
+
+                    System.out.println("Seçilen seans: " + selectedShowTime.getTime());
+                    break;
+                } else {
                     System.out.println("Lütfen sadece filmlerin yanındaki sayıları terminale yazın.");
                 }
-            }
-            else{
+            } else {
                 System.out.println("Lütfen sadece filmlerin yanındaki sayıları terminale yazın.");
             }
         }

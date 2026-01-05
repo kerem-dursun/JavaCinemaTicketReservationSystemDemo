@@ -13,5 +13,5 @@ public class ShowTime {
 
     public int getShowTimeId() {return showTimeId;}
     public int getMovieId() {return movieId;}
-    public LocalTime getDateTime() {return dateTime;}
+    public LocalTime getTime() {return dateTime;}
 }
