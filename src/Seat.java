@@ -1,21 +1,17 @@
 public class Seat {
-    private int seatNo;
-    private boolean isAvailable;
+    private int id;
+    private String seatNumber;
 
-    public Seat(int seatNo, boolean isAvailable) {
-        this.seatNo = seatNo;
-        this.isAvailable = isAvailable;
+    public Seat(int id, String seatNumber) {
+        this.id = id;
+        this.seatNumber = seatNumber;
     }
 
-    public boolean isAvailable() {
-        return isAvailable;
+    public int getId() {
+        return id;
     }
 
-    public void isReserved(boolean available) {
-        isAvailable = available;
-    }
-
-    public int getSeatNo() {
-        return seatNo;
+    public String getSeatNumber() {
+        return seatNumber;
     }
 }

@@ -9,27 +9,16 @@ public class UserInterface {
         System.out.println("1. Kullanıcı Girişi");
         System.out.println("2. Kullanıcı Kayıt");
 
-        while (true) {
-            Scanner input = new Scanner(System.in);
+        Scanner input = new Scanner(System.in);
 
-            if (input.hasNextInt()) {
-                int userChoise = input.nextInt();
+        int userChoice = safeIntInput(input, 1, 2);
 
-                if (userChoise == 1) {
-                    System.out.println("Kullanıcı giriş ekranına yönlendiriliyorsunuz...");
-                    UserInterface.userLoginPage();
-                    break;
-                } else if (userChoise == 2) {
-                    System.out.println("Kullanıcı kayıt ekranına yönlendiriliyorsunuz...");
-                    UserInterface.userRegisterPage();
-                    break;
-                } else {
-                    System.out.println("Geçersiz bir yanıt girdiniz lütfen sadece ekranda yazan sayıları kullanın.");
-                }
-            } else {
-                System.out.println("Geçersiz bir yanıt girdiniz lütfen sadece ekranda yazan sayıları kullanın.");
-                input.next();
-            }
+        if (userChoice == 1) {
+            System.out.println("Kullanıcı giriş ekranına yönlendiriliyorsunuz...");
+            userLoginPage();
+        } else {
+            System.out.println("Kullanıcı kayıt ekranına yönlendiriliyorsunuz...");
+            userRegisterPage();
         }
     }
 
@@ -113,36 +102,31 @@ public class UserInterface {
         System.out.println("2.Geçmiş.");
 
         Scanner input = new Scanner(System.in);
-        while (true) {
-            if (input.hasNextInt()) {
-                int userChoise = input.nextInt();
 
-                if (userChoise == 1) {
-                    System.out.println("Vizyondaki filmlere yönlendiriliyorsunuz...");
-                    UserInterface.moviePage();
-                    break;
-                } else if (userChoise == 2) {
-                    System.out.println("Geçmiş rezervasyonlar ekranına yönlendiriliyorsunuz...");
-                    UserInterface.historyPage();
-                    break;
-                } else {
-                    System.out.println("Geçersiz bir yanıt girdiniz lütfen sadece ekranda yazan sayıları kullanın.");
-                }
-            } else {
-                System.out.println("Geçersiz bir yanıt girdiniz lütfen sadece ekranda yazan sayıları kullanın.");
-                input.next();
-            }
+        int userChoice = safeIntInput(input, 1, 2);
+
+        if (userChoice == 1) {
+            System.out.println("Vizyondaki filmlere yönlendiriliyorsunuz...");
+            moviePage();
+        } else {
+            System.out.println("Geçmiş rezervasyonlar ekranına yönlendiriliyorsunuz...");
+            historyPage();
         }
     }
 
     public static void moviePage() {
+
         Scanner input = new Scanner(System.in);
 
         Connection connection = DatabaseConnection.getConnection();
         MovieDao movieDao = new MovieDao(connection);
+        ShowTimeDao showTimeDao = new ShowTimeDao(connection);
+
         System.out.println("Vizyondaki filmler:");
 
-        for (Movie movie : movieDao.getAllMovies()) {
+        List<Movie> movies = movieDao.getAllMovies();
+
+        for (Movie movie : movies) {
             System.out.println(
                     movie.getId() +
                             " | " +
@@ -151,42 +135,78 @@ public class UserInterface {
                             " dk | Fiyat: " + movie.getPrice() + " TL"
             );
         }
-        System.out.println("Bilet almak istediğiniz filmi seçiniz: ");
-        while (true) {
-            if (input.hasNextInt()) {
-                int userChoice = input.nextInt();
 
-                if (userChoice <= movieDao.getAllMovies().size() && userChoice > 0) {
-                    System.out.println(movieDao.getAllMovies().get(userChoice - 1).getTitle());
-                    System.out.println(movieDao.getAllMovies().get(userChoice - 1).getPrice() + "TL");
+        System.out.println("Bilet almak istediğiniz filmi seçiniz:");
+        int movieChoice = safeIntInput(input, 1, movies.size());
 
-                    Movie selectedMovie = movieDao.getAllMovies().get(userChoice - 1);
+        Movie selectedMovie = movies.get(movieChoice - 1);
 
-                    ShowTimeDao showTimeDao = new ShowTimeDao(connection);
+        System.out.println(selectedMovie.getTitle());
+        System.out.println(selectedMovie.getPrice() + " TL");
 
-                    List<ShowTime> showTimes = showTimeDao.getShowTimeByMovieId(selectedMovie.getId());
+        List<ShowTime> showTimes =
+                showTimeDao.getShowTimeByMovieId(selectedMovie.getId());
 
-                    System.out.println("Seans seçiniz :");
+        System.out.println("Seans seçiniz:");
 
-                    for (int i = 0; i < showTimes.size(); i++) {
-                        System.out.println((i + 1) + ") " + showTimes.get(i).getTime());
-                    }
-
-                    int showTimeChoice = input.nextInt();
-                    ShowTime selectedShowTime = showTimes.get(showTimeChoice - 1);
-
-                    System.out.println("Seçilen seans: " + selectedShowTime.getTime());
-                    break;
-                } else {
-                    System.out.println("Lütfen sadece filmlerin yanındaki sayıları terminale yazın.");
-                }
-            } else {
-                System.out.println("Lütfen sadece filmlerin yanındaki sayıları terminale yazın.");
-            }
+        for (int i = 0; i < showTimes.size(); i++) {
+            System.out.println((i + 1) + ") " + showTimes.get(i).getTime());
         }
+
+        int showTimeChoice = safeIntInput(input, 1, showTimes.size());
+
+        ShowTime selectedShowTime = showTimes.get(showTimeChoice - 1);
+
+        System.out.println("Seçilen seans: " + selectedShowTime.getTime());
+
+        SeatDao seatDao = new SeatDao(connection);
+
+        List<Seat> seats =
+                seatDao.getAvailableSeats(selectedShowTime.getShowTimeId());
+
+        System.out.println("Boş koltuklar:");
+
+        for (int i = 0; i < seats.size(); i++) {
+            System.out.print(
+                    (i + 1) + "-" + seats.get(i).getSeatNumber() + "  "
+            );
+        }
+
+        System.out.println();
+
+        int seatChoice = safeIntInput(input, 1, seats.size());
+
+        Seat selectedSeat = seats.get(seatChoice - 1);
+
+        System.out.println("Seçilen koltuk: " + selectedSeat.getSeatNumber());
+
     }
+
 
     public static void historyPage() {
         System.out.println("Geçmiş rezervasyonlar.");
     }
+
+    private static int safeIntInput(Scanner input, int min, int max) {
+
+        int value;
+
+        while (true) {
+            if (input.hasNextInt()) {
+                value = input.nextInt();
+
+                if (value >= min && value <= max) {
+                    return value;
+                } else {
+                    System.out.println(
+                            "Lütfen " + min + " ile " + max + " arasında bir değer giriniz."
+                    );
+                }
+            } else {
+                System.out.println("Lütfen sadece sayı giriniz.");
+                input.next();
+            }
+        }
+    }
+
 }
