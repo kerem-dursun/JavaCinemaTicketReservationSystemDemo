@@ -1,11 +1,11 @@
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class ShowTime {
     private int showTimeId;
     private int movieId;
-    private LocalDateTime dateTime;
+    private LocalTime dateTime;
 
-    public ShowTime(int showTimeId,  int movieId, LocalDateTime dateTime) {
+    public ShowTime(int showTimeId,  int movieId, LocalTime dateTime) {
         this.showTimeId = showTimeId;
         this.movieId = movieId;
         this.dateTime = dateTime;
@@ -13,5 +13,5 @@ public class ShowTime {
 
     public int getShowTimeId() {return showTimeId;}
     public int getMovieId() {return movieId;}
-    public LocalDateTime getDateTime() {return dateTime;}
+    public LocalTime getDateTime() {return dateTime;}
 }
