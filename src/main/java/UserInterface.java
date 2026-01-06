@@ -1,4 +1,3 @@
-import java.awt.print.Book;
 import java.sql.Connection;
 import java.util.List;
 import java.util.Scanner;
@@ -111,17 +110,20 @@ public class UserInterface {
     public static void mainPage() {
         System.out.println("1.Vizyondaki filmler.");
         System.out.println("2.Geçmiş.");
+        System.out.println("3.Çıkış.");
 
         Scanner input = new Scanner(System.in);
 
-        int userChoice = safeIntInput(input, 1, 2);
+        int userChoice = safeIntInput(input, 1, 3);
 
         if (userChoice == 1) {
             System.out.println("Vizyondaki filmlere yönlendiriliyorsunuz...");
             moviePage();
-        } else {
+        } else if (userChoice == 2) {
             System.out.println("Geçmiş rezervasyonlar ekranına yönlendiriliyorsunuz...");
             historyPage();
+        }else if (userChoice == 3) {
+            System.exit(0);
         }
     }
 
