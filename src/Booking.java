@@ -1,29 +1,44 @@
-public class Booking implements Bookable {
-    private Customer customer;
-    private Movie movie;
-    private Seat seat;
+import java.time.LocalDateTime;
 
-    public Booking(Customer customer, Movie movie, Seat seat) {
-        this.customer = customer;
-        this.movie = movie;
-        this.seat = seat;
+public class Booking implements Bookable {
+
+    private int id;
+    private String userName;
+    private int showTimeId;
+    private int seatId;
+    private double price;
+    private LocalDateTime bookingDate;
+
+    public Booking(String userName, int showTimeId, int seatId, double price) {
+        this.userName = userName;
+        this.showTimeId = showTimeId;
+        this.seatId = seatId;
+        this.price = price;
+        this.bookingDate = LocalDateTime.now();
     }
 
-    @Override
-    public float calculatePrice() {
-        return movie.getPrice();
+    public String getUserName() {
+        return userName;
+    }
+
+    public int getShowTimeId() {
+        return showTimeId;
+    }
+
+    public int getSeatId() {
+        return seatId;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public LocalDateTime getBookingDate() {
+        return bookingDate;
     }
 
     @Override
     public void book() {
-        if (!seat.isAvailable()) {
-            seat.isReserved(true);
-            System.out.println("Rezervasyon başarılı");
-            System.out.println("Film: " + movie.getTitle());
-            System.out.println("Koltuk: " + seat.getSeatNo());
-            System.out.println("Fiyat: " + calculatePrice() + " TL");
-        } else {
-            System.out.println("Bu koltuk dolu!");
-        }
+        System.out.println("Rezervasyon oluşturuldu.");
     }
 }

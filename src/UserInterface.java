@@ -1,3 +1,4 @@
+import java.awt.print.Book;
 import java.sql.Connection;
 import java.util.List;
 import java.util.Scanner;
@@ -191,7 +192,24 @@ public class UserInterface {
                 System.out.println(RED + "Bu koltuk dolu. Lütfen başka bir koltuk seçin." + RESET);
             } else {
                 seatDao.bookSeat(selectedSeat.getId());
+                Booking booking = new Booking(
+                        UserSession.getLoggedCustomer().getUserName(),
+                        selectedShowTime.getShowTimeId(),
+                        selectedSeat.getId(),
+                        selectedMovie.getPrice()
+                );
+
+                BookingDao bookingDao = new BookingDao(connection);
+                bookingDao.save(booking);
+
                 System.out.println(GREEN + "Koltuk başarıyla rezerve edildi!" + RESET);
+                System.out.println("\n---REZERVASYON ÖZETİ---");
+                System.out.println("Kullanıcı : " + booking.getUserName());
+                System.out.println("Film      : " + selectedMovie.getTitle());
+                System.out.println("Seans     : " + selectedShowTime.getTime());
+                System.out.println("Koltuk    : " + selectedSeat.getSeatNumber());
+                System.out.println("Fiyat     : " + booking.getPrice() + " TL");
+
                 break;
             }
         }
