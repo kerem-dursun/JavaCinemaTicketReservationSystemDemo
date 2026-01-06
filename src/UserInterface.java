@@ -161,27 +161,42 @@ public class UserInterface {
 
         SeatDao seatDao = new SeatDao(connection);
 
-        List<Seat> seats =
-                seatDao.getAvailableSeats(selectedShowTime.getShowTimeId());
+        List<Seat> seats = seatDao.getSeatsByShowTimeId(selectedShowTime.getShowTimeId());
 
-        System.out.println("Boş koltuklar:");
+        System.out.println("Koltuklar:");
 
         for (int i = 0; i < seats.size(); i++) {
-            System.out.print(
-                    (i + 1) + "-" + seats.get(i).getSeatNumber() + "  "
-            );
+            Seat seat = seats.get(i);
+
+            if (seat.isBooked()) {
+                System.out.println(
+                        RED + (i + 1) + ") " + seat.getSeatNumber() + " [DOLU]" + RESET
+                );
+            } else {
+                System.out.println(
+                        GREEN + (i + 1) + ") " + seat.getSeatNumber() + " [BOŞ]" + RESET
+                );
+            }
         }
 
-        System.out.println();
+        System.out.println("Rezerve etmek istediğiniz koltuğu seçiniz:");
 
-        int seatChoice = safeIntInput(input, 1, seats.size());
+        int seatChoice;
 
-        Seat selectedSeat = seats.get(seatChoice - 1);
+        while (true) {
+            seatChoice = safeIntInput(input, 1, seats.size());
+            Seat selectedSeat = seats.get(seatChoice - 1);
 
-        System.out.println("Seçilen koltuk: " + selectedSeat.getSeatNumber());
+            if (selectedSeat.isBooked()) {
+                System.out.println(RED + "Bu koltuk dolu. Lütfen başka bir koltuk seçin." + RESET);
+            } else {
+                seatDao.bookSeat(selectedSeat.getId());
+                System.out.println(GREEN + "Koltuk başarıyla rezerve edildi!" + RESET);
+                break;
+            }
+        }
 
     }
-
 
     public static void historyPage() {
         System.out.println("Geçmiş rezervasyonlar.");
@@ -208,5 +223,9 @@ public class UserInterface {
             }
         }
     }
+
+    public static final String RESET = "\u001B[0m";
+    public static final String GREEN = "\u001B[32m";
+    public static final String RED   = "\u001B[31m";
 
 }
