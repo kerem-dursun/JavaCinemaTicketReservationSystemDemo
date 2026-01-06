@@ -70,4 +70,33 @@ public class CustomerDao {
         }
     }
 
+    public Customer getCustomerByUsername(String username) {
+
+        String sql = """
+        select userName, password, isStudent
+        from Customer
+        where UserName = ?
+    """;
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                return new Customer(
+                        resultSet.getString("userName"),
+                        resultSet.getString("password"),
+                        resultSet.getBoolean("isStudent")
+                );
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+
 }

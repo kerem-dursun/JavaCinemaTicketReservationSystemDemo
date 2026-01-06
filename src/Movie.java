@@ -12,4 +12,5 @@ public abstract class Movie {
     public String getTitle() {return title;}
     public float getDuration() {return duration;}
     public abstract float getPrice();
+    public double calculatePrice(){return getPrice();}
 }

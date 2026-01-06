@@ -7,4 +7,9 @@ public class Movie2D extends Movie {
     public float getPrice() {
         return 200;
     }
+
+    @Override
+    public double calculatePrice() {
+        return getPrice();
+    }
 }

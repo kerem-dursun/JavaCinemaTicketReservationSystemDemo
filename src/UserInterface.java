@@ -41,19 +41,29 @@ public class UserInterface {
             CustomerDao customerDao = new CustomerDao(connection);
 
             if (customerDao.loginControl(userName, password)) {
-                UserSession.login(Customer.addNewCustomer(userName, password));
-                System.out.println(UserSession.getLoggedCustomer().getUserName());
+
+                Customer customer =
+                        customerDao.getCustomerByUsername(userName);
+
+                UserSession.login(customer);
+
+                System.out.println(customer.getUserName());
                 System.out.println("Kullanıcı girişi başarılı ana sayfaya yönlendiriliyorsunuz...");
                 UserInterface.mainPage();
                 break;
             }
+
             if (i == 4) {
-                System.out.println("Çok sayıda başarısız giriş denemesinde bulundunuz daha sonra tekrar deneyiniz.");
+                System.out.println(
+                        "Çok sayıda başarısız giriş denemesinde bulundunuz daha sonra tekrar deneyiniz."
+                );
                 System.exit(0);
             }
+
             System.out.println("Kullanıcı adınız veya şifreniz yanlış tekrar deneyiniz.");
         }
     }
+
 
     public static void userRegisterPage() {
         String userName;
@@ -127,23 +137,40 @@ public class UserInterface {
 
         List<Movie> movies = movieDao.getAllMovies();
 
-        for (Movie movie : movies) {
-            System.out.println(
-                    movie.getId() +
-                            " | " +
-                            movie.getTitle() +
-                            " | Süre: " + movie.getDuration() +
-                            " dk | Fiyat: " + movie.getPrice() + " TL"
-            );
+        if(UserSession.getLoggedCustomer().isStudent()) {
+            for (Movie movie : movies) {
+                System.out.println(
+                        movie.getId() +
+                                " | " +
+                                movie.getTitle() +
+                                " | Süre: " + movie.getDuration() +
+                                " dk | Fiyat: " + movie.getPrice() * 0.8 + " TL (Öğrenci indirimi!)"
+                );
+            }
         }
-
+        else{
+            for (Movie movie : movies) {
+                System.out.println(
+                        movie.getId() +
+                                " | " +
+                                movie.getTitle() +
+                                " | Süre: " + movie.getDuration() +
+                                " dk | Fiyat: " + movie.getPrice() + " TL"
+                );
+            }
+        }
         System.out.println("Bilet almak istediğiniz filmi seçiniz:");
         int movieChoice = safeIntInput(input, 1, movies.size());
 
         Movie selectedMovie = movies.get(movieChoice - 1);
 
         System.out.println(selectedMovie.getTitle());
-        System.out.println(selectedMovie.getPrice() + " TL");
+        if (UserSession.getLoggedCustomer().isStudent()) {
+            System.out.println(selectedMovie.getPrice() * 0.8 + " TL");
+        }
+        else{
+            System.out.println(selectedMovie.getPrice() + " TL");
+        }
 
         List<ShowTime> showTimes =
                 showTimeDao.getShowTimeByMovieId(selectedMovie.getId());
@@ -192,12 +219,17 @@ public class UserInterface {
                 System.out.println(RED + "Bu koltuk dolu. Lütfen başka bir koltuk seçin." + RESET);
             } else {
                 seatDao.bookSeat(selectedSeat.getId());
+                Customer customer = UserSession.getLoggedCustomer();
+
+                double finalPrice = BookingService.calculateFinalPrice(selectedMovie, customer);
+
                 Booking booking = new Booking(
-                        UserSession.getLoggedCustomer().getUserName(),
+                        customer.getUserName(),
                         selectedShowTime.getShowTimeId(),
                         selectedSeat.getId(),
-                        selectedMovie.getPrice()
+                        finalPrice
                 );
+
 
                 BookingDao bookingDao = new BookingDao(connection);
                 bookingDao.save(booking);
@@ -208,9 +240,18 @@ public class UserInterface {
                 System.out.println("Film      : " + selectedMovie.getTitle());
                 System.out.println("Seans     : " + selectedShowTime.getTime());
                 System.out.println("Koltuk    : " + selectedSeat.getSeatNumber());
-                System.out.println("Fiyat     : " + booking.getPrice() + " TL");
+                System.out.println("Fiyat     : " + finalPrice + " TL");
+                System.out.println("-----------------------------");
 
-                break;
+                System.out.println("1.Devam.");
+                System.out.println("2.Çıkış.");
+                int userChoise = safeIntInput(input, 1, 2);
+                if (userChoise == 1) {
+                    UserInterface.mainPage();
+                }
+                else if (userChoise == 2) {
+                    break;
+                }
             }
         }
 
@@ -234,6 +275,8 @@ public class UserInterface {
                 System.out.println(record);
             }
         }
+        System.out.println("-----------------------------");
+        UserInterface.mainPage();
     }
 
     private static int safeIntInput(Scanner input, int min, int max) {
