@@ -217,7 +217,23 @@ public class UserInterface {
     }
 
     public static void historyPage() {
-        System.out.println("Geçmiş rezervasyonlar.");
+
+        Connection connection = DatabaseConnection.getConnection();
+        BookingDao bookingDao = new BookingDao(connection);
+
+        String username = UserSession.getLoggedCustomer().getUserName();
+
+        List<String> history = bookingDao.getBookingHistoryByUsername(username);
+
+        System.out.println("\n---REZERVASYON GEÇMİŞİ---");
+
+        if (history.isEmpty()) {
+            System.out.println("Henüz yapılmış bir rezervasyonunuz yok.");
+        } else {
+            for (String record : history) {
+                System.out.println(record);
+            }
+        }
     }
 
     private static int safeIntInput(Scanner input, int min, int max) {
@@ -244,6 +260,6 @@ public class UserInterface {
 
     public static final String RESET = "\u001B[0m";
     public static final String GREEN = "\u001B[32m";
-    public static final String RED   = "\u001B[31m";
+    public static final String RED = "\u001B[31m";
 
 }

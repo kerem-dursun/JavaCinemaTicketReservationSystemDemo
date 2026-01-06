@@ -1,7 +1,6 @@
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BookingDao {
 
@@ -33,4 +32,47 @@ public class BookingDao {
             e.printStackTrace();
         }
     }
+
+    public List<String> getBookingHistoryByUsername(String username) {
+
+        List<String> history = new ArrayList<>();
+
+        String sql = """
+                    select 
+                        m.Title,
+                        s.ShowTime,
+                        st.SeatNumber,
+                        b.Price,
+                        b.BookingDate
+                    from Booking b
+                    join ShowTime s on b.ShowTimeId = s.ShowTimeId
+                    join Movie m on s.MovieId = m.id
+                    join Seat st on b.SeatId = st.SeatId
+                    where b.Username = ?
+                    order by b.BookingDate desc
+                """;
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                String record =
+                        "Film: " + resultSet.getString("Title") +
+                                " | Seans: " + resultSet.getString("ShowTime") +
+                                " | Koltuk: " + resultSet.getString("SeatNumber") +
+                                " | Fiyat: " + resultSet.getDouble("Price") + " TL" +
+                                " | Tarih: " + resultSet.getTimestamp("BookingDate");
+
+                history.add(record);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return history;
+    }
+
 }
